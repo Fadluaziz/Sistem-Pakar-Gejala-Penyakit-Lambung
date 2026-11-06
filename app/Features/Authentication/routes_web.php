@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Features\Authentication\Controllers\Web\LoginController;
 use App\Features\Authentication\Controllers\Web\RegisterController;
 use App\Features\Authentication\Controllers\Web\DashboardController;
+use App\Features\Authentication\Controllers\Web\ProfileController;
 
 Route::get('/login', [LoginController::class, 'showLogin'])
     ->name('login');
@@ -30,4 +31,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('editor.dashboard');
     Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
         ->name('admin.dashboard');
+});
+
+// Profil pasien: data diri yang ikut tercetak pada hasil diagnosa.
+Route::middleware(['auth', 'role:patient'])->group(function () {
+    Route::get('/profil', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::put('/profil', [ProfileController::class, 'update'])
+        ->name('profile.update');
 });

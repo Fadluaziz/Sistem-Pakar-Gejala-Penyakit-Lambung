@@ -5,7 +5,6 @@ namespace App\Features\Authentication\Controllers\Web;
 use App\Features\Shared\Controllers\BaseController;
 use App\Features\Authentication\Requests\RegisterRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 
 class RegisterController extends BaseController
 {
@@ -14,9 +13,13 @@ class RegisterController extends BaseController
         parent::__construct(app(\App\Features\Shared\Services\AuthService::class));
     }
 
-    public function showRegister(): View
+    /**
+     * Halaman register kini menyatu di halaman login (panel "Daftar").
+     * Setiap kunjungan/refresh ke /register diarahkan ke /login.
+     */
+    public function showRegister(): RedirectResponse
     {
-        return view('features.Authentication.register');
+        return redirect()->route('login');
     }
 
     public function register(RegisterRequest $request): RedirectResponse

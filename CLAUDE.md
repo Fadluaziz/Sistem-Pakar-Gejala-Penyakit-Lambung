@@ -115,9 +115,10 @@ Ikuti pola yang ada, bukan hanya aturan di atas:
 
 ## Fitur Inti: Sistem Pakar Forward Chaining
 
-> **Status:** `DiseaseDetection` belum dibuat. Saat ini baru fitur `Authentication` yang
-> ada (login, register, dashboard per peran). Bagian di bawah adalah spesifikasi yang
-> harus diikuti saat membangun fitur ini.
+> **Status:** `DiseaseDetection` lengkap — alur konsultasi pasien, riwayat, peninjauan &
+> diagnosa manual oleh dokter, serta panel editor untuk mengelola basis aturan
+> (penyakit/gejala/bobot). Basis aturan awal tetap dari
+> `database/seeders/KnowledgeBaseSeeder.php`; setelahnya diubah lewat panel editor.
 
 Struktur data pakar:
 
@@ -128,27 +129,57 @@ Struktur data pakar:
 - `diagnoses` / `consultation_sessions` — riwayat konsultasi dan hasil diagnosa.
 
 Seluruh penelusuran fakta (gejala terpilih) menuju konklusi (penyakit) **wajib** berada di
-`InferenceService` di `app/Features/DiseaseDetection/Services/`.
+`InferenceService` di `app/Features/DiseaseDetection/Services/`. Inferensinya
+**forward chaining berbobot**: tiap baris `rules` yang gejalanya muncul menambahkan
+bobotnya ke penyakit terkait, lalu keyakinan = bobot terkumpul / total bobot penyakit.
 
 ```php
-public function execute(array $selectedSymptomIds, int $userId): array
+// Murni: hanya menerima id gejala, tidak menyentuh HTTP maupun menulis database.
+public function execute(array $symptomIds): array
 {
-    return DB::transaction(function () use ($selectedSymptomIds, $userId) {
-        // evaluasi rules → cocokkan premis → hitung persentase → simpan riwayat
-    });
+    // skor tiap penyakit → urutkan → deteksi tanda bahaya → tentukan status
 }
 ```
 
-Hak akses per peran dikontrol via Gate/Policy atau middleware di `routes_web.php`:
+Ambangnya berupa konstanta kelas yang mudah disetel: `MIN_SYMPTOMS` (minimal gejala
+terpilih) dan `MIN_CONFIDENCE` (ambang keyakinan agar boleh disebut kesimpulan).
+
+**Tanda bahaya tidak di-hardcode.** Gejala yang memicu peringatan darurat adalah gejala
+berkategori `Symptom::CATEGORY_BAHAYA` ("Tanda Bahaya"). Begitu juga bagian-bagian wizard
+konsultasi (`ConsultationService::steps()`) **diturunkan dari kolom `symptoms.category`**,
+bukan daftar kode tetap — sehingga gejala yang ditambah editor lewat panel basis aturan
+langsung muncul di konsultasi.
+
+Penyimpanan sesi + hasilnya ditangani `ConsultationService::finish()` di dalam
+`DB::transaction`. Perhitungan keyakinan **tidak** boleh ditulis ulang di controller.
+
+## Panel Basis Aturan (role Editor)
+
+Editor dan Admin mengelola basis aturan lewat route berawalan `editor.` (lihat
+`app/Features/DiseaseDetection/routes_web.php`):
+
+- `editor.rules.index/update` — matriks bobot gejala × penyakit.
+- `editor.symptoms.index/store/update/destroy` — data gejala.
+- `editor.diseases.index/store/update/destroy` — data penyakit.
+
+Logika bisnisnya di `KnowledgeBaseService` (termasuk **penjaga penghapusan**): data yang
+sudah dipakai riwayat konsultasi **tidak boleh dihapus**, karena foreign key di database
+bersifat cascade — menghapus penyakit/gejala akan ikut menghapus riwayat diagnosa/gejala
+pasien.
+
+Hak akses per peran dikontrol via middleware `role` (alias terdaftar di
+`bootstrap/app.php`, kelasnya di `app/Features/Shared/Middleware/`), dipakai di
+`routes_web.php` sebagai `role:patient,doctor,admin` dan `role:editor,admin`:
 Pasien mengisi gejala & melihat hasil/riwayatnya sendiri; Dokter memvalidasi diagnosa &
-menambah catatan medis; Editor mengelola konten penyakit & gejala; Admin akses penuh.
+menambah diagnosa manual; Editor mengelola basis aturan; Admin akses penuh.
 
 ## Cheatsheet
 
 | Kebutuhan | Tindakan |
 |---|---|
 | Halaman/fitur baru | Web Controller + Service + FormRequest (bila ada form) + Blade di `resources/views/features/...` |
-| Menjalankan inferensi | Panggil `InferenceService::execute(...)` dari controller, kirim hasil ke view |
+| Menjalankan inferensi | Panggil `InferenceService::execute($symptomIds)`, atau `ConsultationService::finish()` bila hasilnya perlu disimpan |
+| Mengubah basis aturan | Sunting `database/seeders/KnowledgeBaseSeeder.php`, lalu `php artisan db:seed --class=KnowledgeBaseSeeder` |
 | Validasi form | FormRequest di `{Feature}/Requests/` |
 | Route fitur baru | Daftarkan di `{Feature}/routes_web.php`, lalu `require` di `routes/web.php` |
 | Model dipakai >1 fitur | `app/Features/Shared/Models/` |

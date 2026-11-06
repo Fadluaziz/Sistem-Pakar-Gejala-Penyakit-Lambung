@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk – Sistem Pakar Penyakit Lambung</title>
+    <title>Masuk – LambungCare</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -14,15 +14,15 @@
             align-items: center;
             justify-content: center;
         }
-        .login-card {
+        .auth-card {
             background: #fff;
             padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
         }
-        .login-card h2 {
+        .auth-card h2 {
             text-align: center;
             margin-bottom: 1.5rem;
             color: #1565c0;
@@ -56,7 +56,7 @@
             margin-top: .5rem;
         }
         .btn:hover { background: #0d47a1; }
-        .register-link {
+        .auth-link {
             text-align: center;
             margin-top: 1rem;
             font-size: .9rem;
@@ -82,11 +82,39 @@
         }
         .toggle-password:hover { color: #1565c0; }
         .toggle-password svg { display: block; width: 20px; height: 20px; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .tab-row {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            background: #eceff1;
+            border-radius: 8px;
+            padding: .25rem;
+        }
+        .tab-row button {
+            flex: 1;
+            padding: .55rem 0;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #37474f;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .tab-row button.active { background: #1565c0; color: #fff; }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h2>🩺 Sistem Pakar</h2>
+    <div class="auth-card">
+        <h2>🩺 LambungCare</h2>
+
+        <div class="tab-row" role="tablist">
+            <button type="button" id="tab-login" class="active" onclick="showPanel('login', this)">Masuk</button>
+            <button type="button" id="tab-register" onclick="showPanel('register', this)">Daftar</button>
+        </div>
 
         @if ($errors->any())
             <div class="error">
@@ -100,32 +128,72 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login.submit') }}">
-            @csrf
-            <div class="form-group">
-                <label for="credential">Email / Username</label>
-                <input type="text" id="credential" name="credential"
-                       value="{{ old('credential') }}" required autocomplete="username">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" name="password" required autocomplete="current-password">
-                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)" title="Lihat password" aria-label="Lihat password">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </button>
+        {{-- Panel Login --}}
+        <div class="panel active" id="panel-login">
+            <form method="POST" action="{{ route('login.submit') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="credential">Email / Username</label>
+                    <input type="text" id="credential" name="credential"
+                           value="{{ old('credential') }}" required autocomplete="username">
                 </div>
-            </div>
-            <button type="submit" class="btn">Masuk</button>
-        </form>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)" title="Lihat password" aria-label="Lihat password">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Masuk</button>
+            </form>
+        </div>
 
-        <div class="register-link">
-            Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+        {{-- Panel Register --}}
+        <div class="panel" id="panel-register">
+            <form method="POST" action="{{ route('register.submit') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="reg-name">Nama Lengkap</label>
+                    <input type="text" id="reg-name" name="name" value="{{ old('name') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" name="email" value="{{ old('email') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="reg-password" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('reg-password', this)" title="Lihat password" aria-label="Lihat password">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password_confirmation">Konfirmasi Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="reg-password_confirmation" name="password_confirmation" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('reg-password_confirmation', this)" title="Lihat password" aria-label="Lihat password">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Daftar</button>
+            </form>
         </div>
     </div>
+
     <script>
         const eyeOpen = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
         const eyeOff  = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>`;
@@ -136,6 +204,12 @@
             btn.innerHTML = isPassword ? eyeOff : eyeOpen;
             btn.title = isPassword ? 'Sembunyikan password' : 'Lihat password';
             btn.setAttribute('aria-label', btn.title);
+        }
+        function showPanel(name, btn) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            document.querySelectorAll('.tab-row button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
     </script>
 </body>
