@@ -30,7 +30,9 @@ class InferenceService
     public const MIN_CONFIDENCE = 40.0;
 
     public const STATUS_DIAGNOSED = 'diagnosed';
+
     public const STATUS_INCONCLUSIVE = 'inconclusive';
+
     public const STATUS_INSUFFICIENT = 'insufficient';
 
     /**

@@ -43,7 +43,7 @@
 
     <div class="print-only print-header">
         <h1>LambungCare - Hasil Diagnosa Penyakit Lambung</h1>
-        <p>Laporan hasil konsultasi sistem pakar forward chaining</p>
+        <p>Laporan hasil konsultasi</p>
     </div>
 
     <div class="card no-print">
@@ -240,6 +240,18 @@
             <div class="line">&nbsp;</div>
         </div>
     </div>
+
+    @if($isDiagnosed && $primary)
+        <div class="card no-print" style="background: #e3f2fd; border: 1px solid #90caf9;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="color: #0d47a1; margin-bottom: .25rem;">Ingin konsultasi langsung dengan dokter?</h3>
+                    <p class="muted" style="margin: 0; color: #1565c0;">Buat janji temu di Puskesmas untuk pemeriksaan lebih lanjut.</p>
+                </div>
+                <a href="{{ route('detection.appointments.create') }}" class="btn btn-primary">Buat Janji Temu &rarr;</a>
+            </div>
+        </div>
+    @endif
 
     <div class="actions no-print" style="margin-bottom: 2rem;">
         <a href="{{ route('detection.history') }}" class="btn btn-secondary">Riwayat Konsultasi</a>

@@ -50,8 +50,8 @@ class InferenceServiceTest extends TestCase
 
         $this->assertSame(InferenceService::STATUS_DIAGNOSED, $result['status']);
         $this->assertSame('Dispepsia (Maag)', $result['primary']['name']);
-        // G02(5) + G03(5) + G04(4) + G08(4) = 18 dari 21.
-        $this->assertEqualsWithDelta(85.71, $result['primary']['confidence'], 0.01);
+        // G02(5) + G03(5) + G04(4) + G08(4) = 18 dari total bobot 33.
+        $this->assertEqualsWithDelta(54.55, $result['primary']['confidence'], 0.01);
     }
 
     public function test_heartburn_dan_regurgitasi_menghasilkan_gerd(): void
@@ -60,8 +60,8 @@ class InferenceServiceTest extends TestCase
 
         $this->assertSame(InferenceService::STATUS_DIAGNOSED, $result['status']);
         $this->assertSame('GERD (Refluks Gastroesofageal)', $result['primary']['name']);
-        // G16(5) + G17(5) + G19(4) = 14 dari 27.
-        $this->assertEqualsWithDelta(51.85, $result['primary']['confidence'], 0.01);
+        // G16(5) + G17(5) + G19(4) = 14 dari total bobot 29.
+        $this->assertEqualsWithDelta(48.28, $result['primary']['confidence'], 0.01);
     }
 
     public function test_nyeri_dengan_mual_dan_muntah_menghasilkan_gastritis(): void
@@ -70,8 +70,8 @@ class InferenceServiceTest extends TestCase
 
         $this->assertSame(InferenceService::STATUS_DIAGNOSED, $result['status']);
         $this->assertSame('Gastritis', $result['primary']['name']);
-        // G01(5) + G05(4) + G06(3) + G07(3) = 15 dari 23.
-        $this->assertEqualsWithDelta(65.22, $result['primary']['confidence'], 0.01);
+        // G01(5) + G05(4) + G06(3) + G07(3) = 15 dari total bobot 35.
+        $this->assertEqualsWithDelta(42.86, $result['primary']['confidence'], 0.01);
     }
 
     public function test_satu_gejala_saja_belum_cukup_untuk_disimpulkan(): void
@@ -86,7 +86,7 @@ class InferenceServiceTest extends TestCase
 
     public function test_kombinasi_ambigu_di_bawah_ambang_dianggap_belum_dapat_disimpulkan(): void
     {
-        // G01(5) + G13(2) = 7 dari 23 -> 30.4%, di bawah ambang 40%.
+        // G01(5) + G13(2) = 7 dari 35 -> 20%, di bawah ambang 40%.
         $result = $this->inference->execute($this->idsFor(['G01', 'G13']));
 
         $this->assertSame(InferenceService::STATUS_INCONCLUSIVE, $result['status']);
@@ -117,5 +117,15 @@ class InferenceServiceTest extends TestCase
 
         $this->assertContains('P04', $codes);
         $this->assertNotContains('P02', $codes, 'Dispepsia tidak boleh muncul tanpa gejala yang cocok.');
+    }
+
+    public function test_stres_dan_pola_makan_memicu_dispepsia(): void
+    {
+        $result = $this->inference->execute($this->idsFor(['G02', 'G26', 'G27', 'G28']));
+
+        $this->assertSame(InferenceService::STATUS_DIAGNOSED, $result['status']);
+        $this->assertSame('Dispepsia (Maag)', $result['primary']['name']);
+        // G02(5) + G26(4) + G27(3) + G28(3) = 15 dari 33 = 45.45%
+        $this->assertEqualsWithDelta(45.45, $result['primary']['confidence'], 0.01);
     }
 }

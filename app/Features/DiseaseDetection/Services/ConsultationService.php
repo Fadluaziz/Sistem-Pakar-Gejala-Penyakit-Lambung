@@ -50,6 +50,10 @@ class ConsultationService
         'G19' => 'Apakah keluhan memburuk saat berbaring atau membungkuk?',
         'G20' => 'Apakah Anda sulit atau nyeri saat menelan?',
         'G21' => 'Apakah Anda batuk kering atau suara serak tanpa sebab jelas?',
+        'G26' => 'Apakah belakangan ini Anda sering merasa cemas atau stres berlebihan?',
+        'G27' => 'Apakah pola makan Anda tidak teratur (misalnya sering melewatkan waktu makan)?',
+        'G28' => 'Apakah Anda sering mengonsumsi makanan pedas, asam, atau minuman berkafein?',
+        'G29' => 'Apakah Anda kurang tidur atau waktu istirahat Anda tidak cukup?',
         'G22' => 'Apakah BAB Anda berwarna hitam seperti aspal?',
         'G23' => 'Apakah Anda pernah muntah darah atau cairan seperti kopi?',
         'G24' => 'Apakah berat badan Anda turun tanpa sebab jelas?',
@@ -60,7 +64,7 @@ class ConsultationService
         private readonly InferenceService $inference,
     ) {}
 
-        /**
+    /**
      * Pemetaan kategori gejala ke bagian konsultasi. Pertanyaan tiap bagian
      * diturunkan dari kolom `symptoms.category`, bukan kode hardcoded — sehingga
      * gejala yang ditambah/diubah editor langsung tercermin di konsultasi.
@@ -85,6 +89,12 @@ class ConsultationService
             'title' => 'Gejala Refluks dan Tenggorokan',
             'description' => 'Jawab gejala yang berkaitan dengan naiknya asam lambung.',
             'category' => Symptom::CATEGORY_REFLUKS,
+        ],
+        [
+            'slug' => 'gaya_hidup',
+            'title' => 'Gaya Hidup & Psikis',
+            'description' => 'Beberapa kebiasaan dan kondisi psikis dapat memicu atau memperberat keluhan lambung.',
+            'category' => Symptom::CATEGORY_GAYA_HIDUP,
         ],
         [
             'slug' => 'bahaya',

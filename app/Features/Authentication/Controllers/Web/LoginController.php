@@ -2,16 +2,16 @@
 
 namespace App\Features\Authentication\Controllers\Web;
 
-use App\Features\Shared\Controllers\BaseController;
 use App\Features\Authentication\Requests\LoginRequest;
+use App\Features\Shared\Controllers\BaseController;
+use App\Features\Shared\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 
 class LoginController extends BaseController
 {
     public function __construct()
     {
-        parent::__construct(app(\App\Features\Shared\Services\AuthService::class));
+        parent::__construct(app(AuthService::class));
     }
 
     public function showLogin()
@@ -29,7 +29,7 @@ class LoginController extends BaseController
 
         if (! $result['status']) {
             return back()->withErrors(['login' => $result['message']])
-                         ->withInput($request->only('credential'));
+                ->withInput($request->only('credential'));
         }
 
         return redirect($result['redirect'])->with('success', $result['message']);

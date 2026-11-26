@@ -92,4 +92,24 @@ class DashboardTest extends TestCase
             ->assertSee('Pengguna')
             ->assertSee('Konsultasi');
     }
+
+    public function test_dashboard_admin_menampilkan_aktivitas_terbaru(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $newUser = User::factory()->create(['role' => 'patient', 'name' => 'Pasien Baru Mendaftar']);
+
+        ConsultationSession::create([
+            'user_id' => $newUser->id,
+            'status' => ConsultationSession::STATUS_INSUFFICIENT,
+            'has_red_flag' => false,
+        ]);
+
+        $this->actingAs($admin)
+            ->get('/admin/dashboard')
+            ->assertOk()
+            ->assertSee('Aktivitas Terbaru')
+            ->assertSee('Pendaftar Baru')
+            ->assertSee('Pasien Baru Mendaftar')
+            ->assertSee('Konsultasi Terbaru');
+    }
 }

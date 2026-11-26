@@ -12,13 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ConsultationSession extends Model
 {
     public const STATUS_DIAGNOSED = 'diagnosed';
+
     public const STATUS_INCONCLUSIVE = 'inconclusive';
+
     public const STATUS_INSUFFICIENT = 'insufficient';
 
     public const VALIDATION_CORRECT = 'correct';
+
     public const VALIDATION_INCORRECT = 'incorrect';
 
     public const SOURCE_PATIENT = 'patient';
+
     public const SOURCE_MANUAL = 'manual';
 
     protected $fillable = [

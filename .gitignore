@@ -26,3 +26,6 @@ Thumbs.db
 # Artefak debug lokal (jangan di-commit)
 /fix_password.sql
 /gen_hash.php
+
+# Konfigurasi AI assistant lokal
+/.claude

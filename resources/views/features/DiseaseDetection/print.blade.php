@@ -104,7 +104,7 @@
         </div>
 
         <div class="doc-title">Laporan Hasil Diagnosa</div>
-        <div class="doc-subtitle">Hasil konsultasi pasien pada sistem pakar forward chaining</div>
+        <div class="doc-subtitle">Laporan hasil konsultasi</div>
 
         <div class="section">
             <div class="section-title">A. Identitas Pasien</div>

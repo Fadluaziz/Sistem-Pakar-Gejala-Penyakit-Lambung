@@ -47,6 +47,10 @@ class KnowledgeBaseSeeder extends Seeder
         'G19' => ['Gejala memburuk saat berbaring atau membungkuk', 'Refluks'],
         'G20' => ['Sulit atau nyeri saat menelan', 'Refluks'],
         'G21' => ['Batuk kering atau suara serak tanpa sebab jelas', 'Refluks'],
+        'G26' => ['Sering merasa cemas atau stres berlebihan', 'Gaya Hidup & Psikis'],
+        'G27' => ['Pola makan tidak teratur (sering melewatkan waktu makan)', 'Gaya Hidup & Psikis'],
+        'G28' => ['Sering mengonsumsi makanan pedas, asam, atau minuman berkafein', 'Gaya Hidup & Psikis'],
+        'G29' => ['Kurang tidur atau istirahat tidak cukup', 'Gaya Hidup & Psikis'],
         'G22' => ['BAB berwarna hitam seperti aspal', 'Tanda Bahaya'],
         'G23' => ['Muntah darah atau cairan seperti kopi', 'Tanda Bahaya'],
         'G24' => ['Penurunan berat badan tanpa sebab jelas', 'Tanda Bahaya'],
@@ -143,7 +147,7 @@ class KnowledgeBaseSeeder extends Seeder
     /**
      * Bobot premis aturan: kode penyakit => [kode gejala => bobot].
      *
-     * Total bobot per penyakit: P01 = 23, P02 = 21, P03 = 26, P04 = 27.
+     * Total bobot per penyakit: P01 = 35, P02 = 33, P03 = 26, P04 = 29.
      *
      * @var array<string, array<string, int>>
      */
@@ -156,6 +160,10 @@ class KnowledgeBaseSeeder extends Seeder
             'G06' => 3,
             'G07' => 3,
             'G13' => 2,
+            'G26' => 3,
+            'G27' => 4,
+            'G28' => 3,
+            'G29' => 2,
         ],
         'P02' => [
             'G01' => 3,
@@ -163,6 +171,10 @@ class KnowledgeBaseSeeder extends Seeder
             'G03' => 5,
             'G04' => 4,
             'G08' => 4,
+            'G26' => 4,
+            'G27' => 3,
+            'G28' => 3,
+            'G29' => 2,
         ],
         'P03' => [
             'G01' => 4,
@@ -180,6 +192,7 @@ class KnowledgeBaseSeeder extends Seeder
             'G19' => 4,
             'G20' => 3,
             'G21' => 3,
+            'G28' => 2,
         ],
     ];
 

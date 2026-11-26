@@ -11,7 +11,10 @@
                     Data diri Anda dipakai sebagai identitas pada hasil diagnosa yang dapat dicetak.
                 </p>
             </div>
-            <a href="{{ route('patient.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+                <a href="{{ route('account.password.edit') }}" class="btn btn-secondary">Ubah Password</a>
+                <a href="{{ route('patient.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
+            </div>
         </div>
     </div>
 

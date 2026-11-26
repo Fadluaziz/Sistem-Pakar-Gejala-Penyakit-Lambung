@@ -17,7 +17,15 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if ($user === null || ($roles !== [] && ! in_array($user->role, $roles, true))) {
+        if ($user === null) {
+            abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
+        }
+
+        // Memeriksa role menggunakan sistem Spatie. Fallback ke kolom `role`
+        // jika role Spatie belum tersinkronisasi (misal saat testing).
+        $hasAccess = $roles === [] || $user->hasAnyRole($roles) || in_array($user->role, $roles, true);
+
+        if (! $hasAccess) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
 

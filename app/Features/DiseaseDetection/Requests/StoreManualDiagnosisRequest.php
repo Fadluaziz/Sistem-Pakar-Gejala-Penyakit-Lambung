@@ -2,8 +2,6 @@
 
 namespace App\Features\DiseaseDetection\Requests;
 
-use App\Features\DiseaseDetection\Models\Disease;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

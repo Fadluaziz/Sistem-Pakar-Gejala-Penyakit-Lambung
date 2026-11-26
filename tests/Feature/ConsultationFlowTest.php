@@ -91,6 +91,11 @@ class ConsultationFlowTest extends TestCase
         // Bagian 3 — tanpa gejala refluks.
         $this->actingAs($user)
             ->post(route('detection.consultation.save', 'refluks'), ['symptoms' => []])
+            ->assertRedirect(route('detection.consultation.show', 'gaya_hidup'));
+
+        // Bagian 4 - tanpa gejala gaya hidup.
+        $this->actingAs($user)
+            ->post(route('detection.consultation.save', 'gaya_hidup'), ['symptoms' => []])
             ->assertRedirect(route('detection.consultation.show', 'bahaya'));
 
         // Bagian 4 — tanpa tanda bahaya, konsultasi selesai.
@@ -118,7 +123,7 @@ class ConsultationFlowTest extends TestCase
         $user = $this->patient();
 
         // Belum ada jawaban apa pun, tetapi semua bagian tetap bisa dibuka.
-        foreach (['utama', 'nyeri', 'refluks', 'bahaya'] as $slug) {
+        foreach (['utama', 'nyeri', 'refluks', 'gaya_hidup', 'bahaya'] as $slug) {
             $this->actingAs($user)
                 ->get(route('detection.consultation.show', $slug))
                 ->assertOk();
@@ -132,7 +137,7 @@ class ConsultationFlowTest extends TestCase
         $this->actingAs($user)
             ->get(route('detection.consultation.show', 'utama'))
             ->assertOk()
-            ->assertSee('Bagian 1 dari 4')
+            ->assertSee('Bagian 1 dari 5')
             // Pertanyaan dalam bentuk kalimat, bukan sekadar nama gejala.
             ->assertSee('Apakah Anda merasakan nyeri atau perih di ulu hati?')
             ->assertSee('Ya')
@@ -141,14 +146,14 @@ class ConsultationFlowTest extends TestCase
             ->assertSee('name="symptoms[]"', false);
     }
 
-    public function test_seluruh_25_pertanyaan_terbagi_ke_empat_bagian(): void
+    public function test_seluruh_pertanyaan_terbagi_ke_lima_bagian(): void
     {
         $service = app(ConsultationService::class);
 
         $totalQuestions = collect($service->steps())
             ->sum(fn (array $step): int => $service->questionsForStep($step['slug'])->count());
 
-        $this->assertSame(25, $totalQuestions, 'Konsultasi harus menyediakan 25 pertanyaan.');
+        $this->assertSame(29, $totalQuestions, 'Konsultasi harus menyediakan 29 pertanyaan.');
 
         foreach ($service->steps() as $step) {
             $this->assertNotEmpty(
@@ -178,6 +183,9 @@ class ConsultationFlowTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('detection.consultation.save', 'refluks'), ['symptoms' => []]);
+
+        $this->actingAs($user)
+            ->post(route('detection.consultation.save', 'gaya_hidup'), ['symptoms' => []]);
 
         $this->actingAs($user)
             ->post(route('detection.consultation.save', 'bahaya'), ['symptoms' => []]);
@@ -249,6 +257,10 @@ class ConsultationFlowTest extends TestCase
             'symptoms' => [],
         ]);
 
+        $this->actingAs($user)->post(route('detection.consultation.save', 'gaya_hidup'), [
+            'symptoms' => [],
+        ]);
+
         $this->actingAs($user)->post(route('detection.consultation.save', 'bahaya'), [
             'symptoms' => [],
         ]);
@@ -297,6 +309,10 @@ class ConsultationFlowTest extends TestCase
             'symptoms' => [],
         ]);
 
+        $this->actingAs($user)->post(route('detection.consultation.save', 'gaya_hidup'), [
+            'symptoms' => [],
+        ]);
+
         $this->actingAs($user)->post(route('detection.consultation.save', 'bahaya'), [
             'symptoms' => [],
         ]);
@@ -327,6 +343,10 @@ class ConsultationFlowTest extends TestCase
         ]);
 
         $this->actingAs($user)->post(route('detection.consultation.save', 'refluks'), [
+            'symptoms' => [],
+        ]);
+
+        $this->actingAs($user)->post(route('detection.consultation.save', 'gaya_hidup'), [
             'symptoms' => [],
         ]);
 

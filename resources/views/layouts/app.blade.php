@@ -214,10 +214,20 @@
     </style>
 </head>
 <body>
+    @php
+        $dashboardRoute = match(auth()->user()?->role) {
+            'doctor' => route('doctor.dashboard'),
+            'editor' => route('editor.dashboard'),
+            'admin' => route('admin.dashboard'),
+            default => route('patient.dashboard'),
+        };
+    @endphp
     <div class="container">
         <div class="header">
             <h1>🩺 LambungCare</h1>
             <div class="header-user">
+                <a href="{{ $dashboardRoute }}" class="btn btn-secondary" style="padding: .4rem .8rem; font-size: .85rem; margin-right: .5rem;">Dashboard</a>
+                <a href="{{ route('account.password.edit') }}" style="color:#1565c0; text-decoration:none; font-weight:600;">Ubah Password</a>
                 <span>{{ auth()->user()?->name }}</span>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

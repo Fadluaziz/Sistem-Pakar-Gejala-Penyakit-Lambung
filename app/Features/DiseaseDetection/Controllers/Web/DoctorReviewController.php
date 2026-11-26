@@ -8,9 +8,9 @@ use App\Features\DiseaseDetection\Models\Symptom;
 use App\Features\DiseaseDetection\Requests\StoreManualDiagnosisRequest;
 use App\Features\DiseaseDetection\Requests\ValidateDiagnosisRequest;
 use App\Features\DiseaseDetection\Services\DoctorValidationService;
-use App\Models\User;
 use App\Features\Shared\Controllers\BaseController;
 use App\Features\Shared\Services\AuthService;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 

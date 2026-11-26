@@ -150,6 +150,10 @@
                     </div>
                 </div>
                 <button type="submit" class="btn">Masuk</button>
+
+                <div style="text-align:right; margin-top:.75rem;">
+                    <a href="{{ route('password.request') }}" style="color:#1565c0; font-size:.85rem; text-decoration:none;">Lupa password?</a>
+                </div>
             </form>
         </div>
 

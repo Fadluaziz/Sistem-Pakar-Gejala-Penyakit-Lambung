@@ -13,8 +13,13 @@ class Symptom extends Model
      * 'Tanda Bahaya' juga menjadi pemicu peringatan darurat.
      */
     public const CATEGORY_UMUM = 'Umum';
+
     public const CATEGORY_NYERI = 'Pola Nyeri';
+
     public const CATEGORY_REFLUKS = 'Refluks';
+
+    public const CATEGORY_GAYA_HIDUP = 'Gaya Hidup & Psikis';
+
     public const CATEGORY_BAHAYA = 'Tanda Bahaya';
 
     /** @var array<int, string> */
@@ -22,6 +27,7 @@ class Symptom extends Model
         self::CATEGORY_UMUM,
         self::CATEGORY_NYERI,
         self::CATEGORY_REFLUKS,
+        self::CATEGORY_GAYA_HIDUP,
         self::CATEGORY_BAHAYA,
     ];
 

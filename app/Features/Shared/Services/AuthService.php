@@ -17,7 +17,7 @@ class AuthService
     public function login(array $credentials): array
     {
         $credential = $credentials['credential'];
-        $password    = $credentials['password'];
+        $password = $credentials['password'];
 
         $user = $this->findUserByCredential($credential);
 
@@ -28,8 +28,8 @@ class AuthService
         Auth::login($user);
 
         return [
-            'status'   => true,
-            'message'  => 'Berhasil masuk.',
+            'status' => true,
+            'message' => 'Berhasil masuk.',
             'redirect' => $this->redirectByRole($user->role),
         ];
     }
@@ -57,18 +57,18 @@ class AuthService
         }
 
         $user = User::create([
-            'name'              => $data['name'],
-            'email'             => $data['email'],
-            'password'          => Hash::make($data['password']),
-            'role'              => $data['role'] ?? 'patient',
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $data['role'] ?? 'patient',
             'email_verified_at' => now(),
         ]);
 
         Auth::login($user);
 
         return [
-            'status'   => true,
-            'message'  => 'Pendaftaran berhasil. Selamat datang!',
+            'status' => true,
+            'message' => 'Pendaftaran berhasil. Selamat datang!',
             'redirect' => $this->redirectByRole($user->role),
         ];
     }
@@ -86,10 +86,10 @@ class AuthService
     private function redirectByRole(string $role): string
     {
         return match ($role) {
-            'admin'  => '/admin/dashboard',
+            'admin' => '/admin/dashboard',
             'doctor' => '/doctor/dashboard',
             'editor' => '/editor/dashboard',
-            default  => '/patient/dashboard',
+            default => '/patient/dashboard',
         };
     }
 }

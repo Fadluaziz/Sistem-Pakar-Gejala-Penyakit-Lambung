@@ -22,10 +22,10 @@ class DashboardStatsService
      */
     public function forUser(User $user): array
     {
-        return match ($user->role) {
-            'doctor' => $this->doctorStats(),
-            'admin' => $this->adminStats(),
-            'editor' => $this->editorStats(),
+        return match (true) {
+            $user->hasRole('admin') => $this->adminStats(),
+            $user->hasRole('doctor') => $this->doctorStats(),
+            $user->hasRole('editor') => $this->editorStats(),
             default => $this->patientStats($user),
         };
     }

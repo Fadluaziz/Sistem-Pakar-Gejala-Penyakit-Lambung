@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Force HTTPS
+    |--------------------------------------------------------------------------
+    |
+    | Bila true, semua URL yang di-generate dipaksa memakai skema https.
+    | Setel FORCE_HTTPS=true saat aplikasi dibagikan lewat tunnel https
+    | (mis. ngrok). Biarkan false untuk pemakaian lokal lewat http://localhost.
+    |
+    */
+
+    'force_https' => (bool) env('FORCE_HTTPS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
